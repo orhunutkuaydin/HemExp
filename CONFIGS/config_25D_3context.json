@@ -1,0 +1,79 @@
+{
+  "run": {
+    "name": "config_25D_3context",
+    "results_root": "./results",
+    "seed": 123,
+    "wandb": {
+      "enabled": true,
+      "project": "HEMEXP",
+      "entity": "accountusername"
+    }
+  },
+
+  "data": {
+   "slices_root": "root/slices_train_25D",
+    "clinical_csv": "root/clinical_data/clinical_data.csv",
+    "slice_thickness_csv": "root/clinical_data/slice_thickness.csv",
+
+    "train_hospitals": ["HospitalA", "HospitalB", "HospitalC"],
+    "val_hospitals": ["HospitalC_set2"],
+    "context_mm_step": 5.0,
+    "default_slice_thickness_mm": 5.0,
+
+    "ct_do_window": true,
+    "ct_window_min" : 0,
+    "ct_window_max" : 100,
+
+    "augment": {
+      "flip": true,
+      "rotation": false,
+      "rotation_range_deg": 0
+    }
+  },
+
+  "ae": {
+    "use_latent_diffusion": true,
+    "ae_ckpt": "/checkpoints/checkpoint_step_6500.pth",
+    "ae_input_size": 384,
+    "latent_size": 96,
+    "latent_channels": 4,
+    "mean": [ 0.07150641575643525, -0.01449177010269329, -0.12162085890725917, -0.6276609262555505],
+    "std" : [ 1.1171226243273853, 1.1421013250158707, 1.090235722130412, 1.1637959476217363]
+  },
+
+  "model": {
+    "dim": 96,
+    "dim_mults": [1, 2, 4, 8],
+    "channels": 4,
+    "flash_attn": false,
+    "dropout": 0,
+    "use_clinical": true,
+    "use_expansion_flag_input": true,
+    "clinical_drop_prob": 0.1,
+    "expansion_flag_drop_prob": 0.0,
+    "context_slices": 3
+  },
+
+  "diffusion": {
+    "timesteps": 1000,
+    "sampling_timesteps": 250,
+    "objective": "pred_v",
+    "beta_schedule": "sigmoid",
+    "ddim_eta": 0,
+    "min_snr_loss_weight": true,
+    "min_snr_gamma": 1,
+    "segmentation_loss_weight": 0.5,
+    "latent_predict_delta": true
+  },
+
+  "train": {
+    "batch_size": 16,
+    "grad_accum": 2,
+    "lr": 0.0001,
+    "steps": 50000,
+    "ema_decay": 0.995,
+    "amp": true,
+    "save_every": 2500,
+    "resume_checkpoint": null
+  }
+}
